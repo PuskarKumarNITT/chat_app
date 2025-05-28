@@ -8,10 +8,13 @@ const cookiesParser = require("cookie-parser");
 
 const PORT = process.env.PORT || 8080;
 
+
 app.use(cors({
-    origin: process.env.FRONTEND_URL,
+    origin: process.env.FRONTEND_URL,  // <-- this reads from your .env
     credentials: true
-}))
+}));
+
+console.log(process.env.FRONTEND_URL);
 
 app.use(express.json());
 app.use(cookiesParser());

@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import { IoMdClose } from "react-icons/io";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import uploadFile from '../helpers/uploadFile';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const RegisterPage = () => {
   const [data,setData] =useState(
@@ -13,7 +16,7 @@ const RegisterPage = () => {
   );
 
   const [uploadPhoto, setUploadPhoto] = useState("");
-
+  const navigate = useNavigate();
 
   const handleOnChange = (e) =>{
     const {name,value} = e.target;
@@ -26,9 +29,18 @@ const RegisterPage = () => {
   }
 
   
-  const handleUploadPhoto = (e) => {
+  const handleUploadPhoto = async (e) => {
       const file = e.target.files[0];
+      const uploadPhoto2 = await uploadFile(file);
+      setData((prev) => {
+        return {
+          ...prev,
+          profile_pic: uploadPhoto2?.url
+        }
+      })
+      
       setUploadPhoto(file);
+      
   }
 
   const handleClearUploadPhoto =(e)=>{
@@ -37,16 +49,34 @@ const RegisterPage = () => {
     setUploadPhoto(null);
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
       e.preventDefault();
       e.stopPropagation();
+      const URL = `${import.meta.env.VITE_BACKEND_URL}/api/register`;
 
+      try{
+         const response = await axios.post(URL,data);
+         toast.success(response?.data?.message);
+         if(response?.data?.success){
+            setData(
+              {
+                name: "",
+                email: "",
+                password: "",
+                profile_pic: ""
+              }
+            );
+            navigate("/email");
+         }
+      }catch(err){
+         toast.error(err?.response?.data?.message);
+      }
   }
 
-  console.log(data);
+
   return (
     <div className='mt-10'>
-      <div className='bg-white w-full max-w-sm mx-2 rounded overflow-hidden p-4 mx-auto'>
+      <div className='bg-white w-full max-w-sm  rounded overflow-hidden p-4 mx-auto'>
         <h3>
           Welcome to ChatApp
         </h3>
@@ -77,7 +107,7 @@ const RegisterPage = () => {
             <label htmlFor="password">Password :</label><br />
             <input type="password" id="password" name="password" placeholder='Enter your password'
               className='bg-slate-100 px-2 py-1 focus:outline-primary'
-              value={data.email}
+              value={data.password}
               onChange={handleOnChange}
               required
             />
