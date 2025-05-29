@@ -40,7 +40,9 @@ const CheckEmailPage = () => {
                 email: ""
               }
             );
-            navigate("/password");
+            navigate("/password",{
+              state: response?.data?.data
+            });
          }
       }catch(err){
          toast.error(err?.response?.data?.message);
