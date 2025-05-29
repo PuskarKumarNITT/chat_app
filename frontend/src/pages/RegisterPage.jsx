@@ -86,7 +86,7 @@ const RegisterPage = () => {
           <div className='flax flex-col gap-1'>
             <label htmlFor="name">Name</label><br />
             <input type="text" id="name" name="name" placeholder='Enter your name'
-              className='bg-slate-100 px-2 py-1 focus:outline-primary'
+              className='bg-slate-100 px-2 py-1 focus:outline-primary w-full'
               value={data.name}
               onChange={handleOnChange}
               required
@@ -96,7 +96,7 @@ const RegisterPage = () => {
           <div className='flax flex-col gap-1'>
             <label htmlFor="email">Email</label><br />
             <input type="email" id="email" name="email" placeholder='Enter your email'
-              className='bg-slate-100 px-2 py-1 focus:outline-primary'
+              className='bg-slate-100 px-2 py-1 focus:outline-primary w-full'
               value={data.email}
               onChange={handleOnChange}
               required
@@ -106,7 +106,7 @@ const RegisterPage = () => {
           <div className='flax flex-col gap-1'>
             <label htmlFor="password">Password :</label><br />
             <input type="password" id="password" name="password" placeholder='Enter your password'
-              className='bg-slate-100 px-2 py-1 focus:outline-primary'
+              className='bg-slate-100 px-2 py-1 focus:outline-primary w-full'
               value={data.password}
               onChange={handleOnChange}
               required
@@ -115,7 +115,7 @@ const RegisterPage = () => {
 
           <div className='flax flex-col gap-1'>
             <label htmlFor="profile_pic">Photo :
-                  <div className='h-14 bg-slate-200 flex justify-center items-center border rounded hover:border-primary cursor-pointer'>
+                  <div className='w-full h-14 bg-slate-200 flex justify-center items-center border rounded hover:border-primary cursor-pointer'>
                     <p className='text-sm max-w-[200] text-ellipsis line-clamp-1'>
                       {
                         uploadPhoto?.name ? uploadPhoto.name : "upload Profile Photo"
