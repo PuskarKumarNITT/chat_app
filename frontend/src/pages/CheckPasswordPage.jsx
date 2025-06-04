@@ -6,6 +6,8 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { LuCircleUserRound } from "react-icons/lu";
 import Avatar from '../components/Avatar';
+import { useDispatch } from 'react-redux';
+import { setToken, setUser } from '../redux/userSlice';
 
 
 const CheckPasswordPage = () => {
@@ -17,7 +19,7 @@ const CheckPasswordPage = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-
+  const dispatch = useDispatch();
   useEffect(()=>{
       if(!location?.state?.name){
         navigate("/email");
@@ -33,29 +35,37 @@ const CheckPasswordPage = () => {
     })
   }
 
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  const URL = `${import.meta.env.VITE_BACKEND_URL}/api/password`;
 
-  const handleSubmit = async (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const URL = `${import.meta.env.VITE_BACKEND_URL}/api/password`;
+  try {
+    const response = await axios.post(
+      URL,
+      {
+        userId: location?.state?._id,
+        password: data.password
+      },
+      { withCredentials: true }
+    );
 
-      try{
-         const response = await axios.post(URL,data);
-         toast.success(response?.data?.message);
-         if(response?.data?.success){
-            setData(
-              {
-                password: ""
-              }
-            );
-            navigate("/");
-         }
-      }catch(err){
-         toast.error(err?.response?.data?.message);
-      }
+    toast.success(response?.data?.message);
+
+    if(response?.data?.success){
+      dispatch(setToken(response?.data?.token));
+      localStorage.setItem('token',response?.data?.token);
+    }
+
+    if (response?.data?.success) {
+      setData({ password: "" });
+      navigate("/");
+    }
+  } catch (err) {
+    toast.error(err?.response?.data?.message || "Something went wrong");
   }
+};
 
-  
     let valu = "Puskar Kumar";
   return (
     <div className='mt-10'>
@@ -97,7 +107,7 @@ const CheckPasswordPage = () => {
             </form>
     
             <p className='my-2 text-center'>
-              <Link to={"/register"} className='hover:text-primary font-semibold' > Forgot Password </Link>
+              <Link to={"/forgot-password"} className='hover:text-primary font-semibold' > Forgot Password </Link>
             </p>
           </div>
         </div>
