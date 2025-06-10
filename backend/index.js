@@ -2,10 +2,12 @@ const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/connectDB");
 require('dotenv').config();
-const app = express();
 const router = require('./routes/index');
 const cookiesParser = require("cookie-parser");
+const {app, server}  = require("./socket/index");
 
+
+// const app = express();
 const PORT = process.env.PORT || 8080;
 
 
@@ -30,7 +32,7 @@ app.get("/",(req,res) => {
 app.use('/api',router);
 
 connectDB().then(() => {
-    app.listen(PORT,() => {
+    server.listen(PORT,() => {
     console.log(`server is running at port ${PORT}`);
     })
 })

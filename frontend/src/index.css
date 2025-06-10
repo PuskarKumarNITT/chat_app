@@ -3,6 +3,8 @@
   --color-primary: #00acb4;
   --color-secondary: #058187;
 }
+
+
 body {
   @apply bg-slate-200
   

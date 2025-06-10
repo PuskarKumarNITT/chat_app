@@ -6,7 +6,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 
 const RegisterPage = () => {
-  const [data,setData] =useState(
+  const [data, setData] = useState(
     {
       name: "",
       email: "",
@@ -18,9 +18,9 @@ const RegisterPage = () => {
   const [uploadPhoto, setUploadPhoto] = useState("");
   const navigate = useNavigate();
 
-  const handleOnChange = (e) =>{
-    const {name,value} = e.target;
-    setData((prev)=> {
+  const handleOnChange = (e) => {
+    const { name, value } = e.target;
+    setData((prev) => {
       return {
         ...prev,
         [name]: value
@@ -28,49 +28,49 @@ const RegisterPage = () => {
     })
   }
 
-  
+
   const handleUploadPhoto = async (e) => {
-      const file = e.target.files[0];
-      const uploadPhoto2 = await uploadFile(file);
-      setData((prev) => {
-        return {
-          ...prev,
-          profile_pic: uploadPhoto2?.url
-        }
-      })
-      
-      setUploadPhoto(file);
-      
+    const file = e.target.files[0];
+    const uploadPhoto2 = await uploadFile(file);
+    setData((prev) => {
+      return {
+        ...prev,
+        profile_pic: uploadPhoto2?.url
+      }
+    })
+
+    setUploadPhoto(file);
+
   }
 
-  const handleClearUploadPhoto =(e)=>{
+  const handleClearUploadPhoto = (e) => {
     e.stopPropagation();
     e.preventDefault();
     setUploadPhoto(null);
   }
 
   const handleSubmit = async (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const URL = `${import.meta.env.VITE_BACKEND_URL}/api/register`;
+    e.preventDefault();
+    e.stopPropagation();
+    const URL = `${import.meta.env.VITE_BACKEND_URL}/api/register`;
 
-      try{
-         const response = await axios.post(URL,data);
-         toast.success(response?.data?.message);
-         if(response?.data?.success){
-            setData(
-              {
-                name: "",
-                email: "",
-                password: "",
-                profile_pic: ""
-              }
-            );
-            navigate("/email");
-         }
-      }catch(err){
-         toast.error(err?.response?.data?.message);
+    try {
+      const response = await axios.post(URL, data);
+      toast.success(response?.data?.message);
+      if (response?.data?.success) {
+        setData(
+          {
+            name: "",
+            email: "",
+            password: "",
+            profile_pic: ""
+          }
+        );
+        navigate("/email");
       }
+    } catch (err) {
+      toast.error(err?.response?.data?.message);
+    }
   }
 
 
@@ -115,32 +115,32 @@ const RegisterPage = () => {
 
           <div className='flax flex-col gap-1'>
             <label htmlFor="profile_pic">Photo :
-                  <div className='w-full h-14 bg-slate-200 flex justify-center items-center border rounded hover:border-primary cursor-pointer'>
-                    <p className='text-sm max-w-[200] text-ellipsis line-clamp-1'>
-                      {
-                        uploadPhoto?.name ? uploadPhoto.name : "upload Profile Photo"
-                      }
-                      {
-                        uploadPhoto?.name && (
-                          <button className='text-lg ml-2 hover:text-red-600' onClick={handleClearUploadPhoto}>
-                          <IoMdClose/>
-                        </button>
-                        )
-                      }
-                    </p>
-                  </div>
-              </label><br />
-            <input type="file" id="profile_pic" name="profile_pic" 
+              <div className='w-full h-14 bg-slate-200 flex justify-center items-center border rounded hover:border-primary cursor-pointer'>
+                <p className='text-sm max-w-[200] text-ellipsis line-clamp-1'>
+                  {
+                    uploadPhoto?.name ? uploadPhoto.name : "upload Profile Photo"
+                  }
+                  {
+                    uploadPhoto?.name && (
+                      <button className='text-lg ml-2 hover:text-red-600' onClick={handleClearUploadPhoto}>
+                        <IoMdClose />
+                      </button>
+                    )
+                  }
+                </p>
+              </div>
+            </label><br />
+            <input type="file" id="profile_pic" name="profile_pic"
               className='bg-slate-100 px-2 py-1 focus:outline-primary hidden '
               onChange={handleUploadPhoto}
             />
           </div>
 
           <button
-              className='bg-primary text-lg px-4 py-1 hover:bg-secondary rounded font-bold text-white leading-relaxed tracking-wider'
-            >
+            className='bg-primary text-lg px-4 py-1 hover:bg-secondary rounded font-bold text-white leading-relaxed tracking-wider'
+          >
 
-                Register
+            Register
           </button>
 
         </form>
