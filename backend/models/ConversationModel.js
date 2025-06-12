@@ -16,6 +16,11 @@ const messageSchema = new mongoose.Schema({
     seen: {
         type: Boolean,
         default: false
+    },
+    msgByUserId:{
+        type: mongoose.Schema.ObjectId,
+        required: true,
+        ref: 'User'
     }
 },{
     timestamps: true
@@ -27,14 +32,14 @@ const conversationSchema = new mongoose.Schema({
         ref: 'User'
     },
     receiver: {
-        ttype: mongoose.Schema.ObjectId,
+        type: mongoose.Schema.ObjectId,
         required: true,
         ref: 'User'
     },
     messages: [
         {
             type:mongoose.Schema.ObjectId,
-            ref: 'User'
+            ref: 'Message'
 
         }
     ]

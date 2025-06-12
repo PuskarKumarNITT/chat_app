@@ -11,6 +11,7 @@ import toast from 'react-hot-toast';
 import Divider from './Divider';
 import { FaLocationArrow } from "react-icons/fa";
 import SearchUser from './SearchUser';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -20,11 +21,12 @@ const Sidebar = () => {
 
     const user = useSelector(state => state?.user);
     const [editUserOpen, setEditUserOpen] = useState(false);
-    const [allUser,setAllUser] = useState([]);
-    const [openSearchUser,setOpenSearchUser] = useState(false);
+    const [allUser, setAllUser] = useState([]);
+    const [openSearchUser, setOpenSearchUser] = useState(false);
 
     const dispatch = useDispatch();
 
+    const navigate = useNavigate();
     const handleLogout = () => {
         dispatch(logout());
         toast.success("Logged Out");
@@ -38,14 +40,14 @@ const Sidebar = () => {
                     <NavLink className={({ isActive }) => `w-12 h-12  flex justify-center items-center cursor-pointer hover:bg-slate-200 rounded ${isActive && "bg-slate-200"}`} title='chat'>
                         <BsChatDotsFill size={25} />
                     </NavLink>
-                    <div title='add Friend' onClick={()=> setOpenSearchUser(true)} className='w-12 h-12  flex justify-center items-center cursor-pointer hover:bg-slate-200 rounded' >
+                    <div title='add Friend' onClick={() => setOpenSearchUser(true)} className='w-12 h-12  flex justify-center items-center cursor-pointer hover:bg-slate-200 rounded' >
                         <FaUserPlus size={25} />
                     </div>
                 </div>
                 <div className='flex flex-col items-center'>
 
                     <button className='mx-auto cursor-pointer' title={user?.name} onClick={() => setEditUserOpen(true)}>
-                        <Avatar width={38} heigh={38} name={user.name} imageUrl={user?.profile_pic } userId={user?._id}>
+                        <Avatar width={38} heigh={38} name={user.name} imageUrl={user?.profile_pic} userId={user?._id}>
 
                         </Avatar>
                     </button>
@@ -71,10 +73,10 @@ const Sidebar = () => {
                         allUser.length == 0 && (
                             <div>
                                 <div className='flex justify-center items-center  my-4 text-slate-400 mt-10'>
-                                        <FaLocationArrow 
-                                            className='text-green-600'
+                                    <FaLocationArrow
+                                        className='text-green-600'
                                         size={50}
-                                        />
+                                    />
                                 </div>
                                 <p className='text-lg text-center text-slate-400'>Explore Users to start a conversation</p>
                             </div>
@@ -94,7 +96,7 @@ const Sidebar = () => {
             {/* Search User */}
             {
                 openSearchUser && (
-                    <SearchUser onClose = {() => {setOpenSearchUser(false)}}
+                    <SearchUser onClose={() => { setOpenSearchUser(false) }}
                     />
                 )
             }

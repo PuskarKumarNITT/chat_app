@@ -11,10 +11,10 @@ import ForgotPassword from "../pages/ForgotPassword";
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <App/>,
+        element: <App />,
         children: [
             {
-                path:"register",
+                path: "register",
                 element: <AuthLayout><RegisterPage></RegisterPage></AuthLayout>
             },
             {
@@ -41,5 +41,5 @@ const router = createBrowserRouter([
             }
         ]
     }
-]); 
+]);
 export default router;

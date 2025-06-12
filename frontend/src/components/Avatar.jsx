@@ -27,14 +27,23 @@ const Avatar = ({ userId, name, imageUrl, width, height }) => {
         'bg-yellow-200'
     ];
 
-    const randomNumber = Math.floor(Math.random() * 5);
+
+    function hashUserIdToIndex(id, len) {
+        let hash = 0;
+        for (let i = 0; i < id.length; i++) {
+            hash = id.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        return Math.abs(hash) % len;
+    }
+
+    const randomNumber = hashUserIdToIndex(userId || '', bgColor.length);
 
     const isOnline = onlineUser.includes(userId);
     return (
-        <div className={`text-slate-800 rounded-full w-fit mx-auto shadow-xl border-amber-50 text-4xl font-bold relative`} style={{ width: width + "px", height: height + "px" }}>
+        <div className={`text-slate-800 rounded-full w-fit  shadow-xl border-amber-50 text-4xl font-bold relative`} style={{ width: width + "px", height: height + "px" }}>
             {
                 imageUrl ? (
-                    <img src={imageUrl} alt={name} width={width} height={height} />
+                    <img src={imageUrl} alt={name} width={width} height={height} className="w-full h-full object-cover rounded-full" />
                 ) : (
                     name ? (
                         <div

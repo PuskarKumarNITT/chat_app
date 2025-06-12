@@ -39,7 +39,7 @@ const SearchUser = ({ onClose }) => {
 
     console.log("Search Result: ", searchUser);
     return (
-        <div className='fixed top-0 bottom-0 left-0 right-0 bg-slate-700/40 p-2'>
+        <div className='fixed top-0 z-10 bottom-0 left-0 right-0 bg-slate-700/40 p-2'>
             <div className='w-full max-w-lg mx-auto mt-5 '>
                 {/* input Search User */}
                 <div className='bg-white rounded h-15 flex '>
@@ -72,7 +72,7 @@ const SearchUser = ({ onClose }) => {
 
                     {
                         loading && (
-                            <CircularLoading />
+                            <CircularLoading height={35} width={35}/>
                         )
                     }
 
