@@ -12,7 +12,8 @@ import uploadFile from '../helpers/uploadFile';
 import CircularLoading from './CircularLoading';
 import backgroundImg from '../assets/backgroundImg.jpg'
 import { LuSendHorizontal } from "react-icons/lu";
-
+import moment from 'moment/moment';
+import { useRef } from 'react';
 
 const MessagePage = () => {
   const params = useParams();
@@ -20,6 +21,13 @@ const MessagePage = () => {
   const user = useSelector(state => state?.user);
   const [openImageVideoUpload, setOpenImageVideoUpload] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [allMessage, setAllMessage] = useState([]);
+  const currentMessage = useRef(null);
+  useEffect(() => {
+    if (currentMessage) {
+      currentMessage?.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+    }
+  })
 
   const [message, setMessage] = useState({
     text: "",
@@ -87,17 +95,20 @@ const MessagePage = () => {
   useEffect(() => {
     if (socketConnection) {
       socketConnection.emit('message-page', params.userId);
+      socketConnection.emit('seen', params.userId);
 
-      socketConnection.on('message-user', (data) => {
-        console.log("user details :", data);
-        setDataUser(data);
-      })
-      socketConnection.on('message',(data) => {
-        console.log("message data",data);
-        setDataUser(data);
-      })
+      const handleUser = (data) => setDataUser(data);
+      const handleMessage = (data) => setAllMessage(data);
+
+      socketConnection.on('message-user', handleUser);
+      socketConnection.on('message', handleMessage);
+
+      return () => {
+        socketConnection.off('message-user', handleUser);
+        socketConnection.off('message', handleMessage);
+      };
     }
-  }, [socketConnection, params?.userId, user])
+  }, [socketConnection, params?.userId]);
 
 
   const handleOnChange = (e) => {
@@ -115,23 +126,25 @@ const MessagePage = () => {
     e.preventDefault();
     e.stopPropagation();
 
-    if(message.text || message.imageUrl || message.videoUrl) {
-      if(socketConnection){
-        socketConnection.emit('new Message',{
+    if (message.text || message.imageUrl || message.videoUrl) {
+      if (socketConnection) {
+        socketConnection.emit('new Message', {
           sender: user?._id,
           receiver: params?.userId,
-          text:message.text,
+          text: message.text,
           imageUrl: message.imageUrl,
           videoUrl: message.videoUrl,
-          msgByUserId:user?._id
+          msgByUserId: user?._id
         })
       }
     }
-
+    setOpenImageVideoUpload(false);
     setMessage(prev => ({
-        ...prev,
-        text: ""
-      }));
+      ...prev,
+      text: "",
+      imageUrl: "",
+      videoUrl: ""
+    }));
   }
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-no-repeat bg-cover" style={{ backgroundImage: `url(${backgroundImg})` }}>
@@ -168,10 +181,49 @@ const MessagePage = () => {
       {/* Display Image */}
       <section className='relative flex-1 bg-slate-400/25 overflow-x-hidden overflow-y-scroll scrollbar-hide [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-slate-100 [&::-webkit-scrollbar-thumb]:bg-slate-400 [&::-webkit-scrollbar-thumb]:rounded-full
   '>
+
+        {/* { all messages} */}
+        <div className='flex flex-col gap-2 py-2 mx-2' ref={currentMessage}>
+          {
+            allMessage && allMessage.map((msg, index) => (
+              <div
+                key={index}
+                className={`p-1 rounded w-fit ${user._id === msg.msgByUserId ? "ml-auto bg-teal-100" : "bg-white"}`}
+              >
+
+                {/* Image message */}
+                {msg.imageUrl && (
+                  <img
+                    src={msg.imageUrl}
+                    alt="sent"
+                    className="w-60 h-auto object-contain rounded-md m-2"
+                  />
+                )}
+
+                {/* Video message */}
+                {msg.videoUrl && (
+                  <video
+                    src={msg.videoUrl}
+                    controls
+                    className="w-60 h-auto object-contain rounded-md m-2"
+                  />
+                )}
+
+                {/* Text message */}
+                {msg.text && <p className='px-1 py-1'>{msg.text}</p>}
+
+                {/* Timestamp */}
+                <p className='text-xs ml-auto w-fit'>{moment(msg.createdAt).format('hh:mm A')}</p>
+              </div>
+            ))
+
+          }
+        </div>
+
         {/* {Upload Image display} */}
         {
           message?.imageUrl && (
-            <div className='w-full h-full flex justify-center items-center rounded overflow-hidden'>
+            <div className='w-full h-full  sticky bottom-0 flex justify-center items-center rounded overflow-hidden'>
               <div className='w-fit p-2 absolute top-0 right-0 cursor-pointer hover:text-red-600 z-10' onClick={handleClearUploadImage}>
                 <IoIosClose size={40} />
               </div>
@@ -206,6 +258,7 @@ const MessagePage = () => {
             </div>
           )
         }
+
       </section>
 
       {/* Send Message*/}
@@ -245,16 +298,16 @@ const MessagePage = () => {
         {/* {input box} */}
 
         <form action="" onSubmit={handleSendMessage} className='h-full w-full flex gap-2'>
-            <input type="text" placeholder='Type message...'
-              className='py-1 px-4 outline-none w-full h-full '
-              value={message.text}
-              onChange={handleOnChange}
-            />
-            <button type="submit"
-             className='text-primary hover:text-secondary cursor-pointer rounded-full w-16 flex justify-center items-center' 
-             >
-              <LuSendHorizontal size={30}/>
-            </button>
+          <input type="text" placeholder='Type message...'
+            className='py-1 px-4 outline-none w-full h-full '
+            value={message.text}
+            onChange={handleOnChange}
+          />
+          <button type="submit"
+            className='text-primary hover:text-secondary cursor-pointer rounded-full w-16 flex justify-center items-center'
+          >
+            <LuSendHorizontal size={30} />
+          </button>
         </form>
 
       </section>
