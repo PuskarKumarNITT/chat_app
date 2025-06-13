@@ -1,15 +1,17 @@
 const UserModel = require("../models/UserModel");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken")
-async function checkPassword(req,res){
-    try{
-        const {password,userId} = req.body;
+const jwt = require("jsonwebtoken");
+
+
+async function checkPassword(req, res) {
+    try {
+        const { password, userId } = req.body;
 
         const user = await UserModel.findOne({ _id: userId });
 
-        const verifyPassword = bcrypt.compareSync(password,user.password);
-        
-        if(!verifyPassword){
+        const verifyPassword = bcrypt.compareSync(password, user.password);
+
+        if (!verifyPassword) {
             return res.status(400).json({
                 message: "please check your password",
                 error: true
@@ -20,22 +22,26 @@ async function checkPassword(req,res){
             email: user.email
         }
 
-        const token = await jwt.sign(tokenData,process.env.JWT_SECRET_KEY,{expiresIn: '1d'});
+        const token = await jwt.sign(tokenData, process.env.JWT_SECRET_KEY, { expiresIn: '1d' });
 
         const cookieOptions = {
-            http: true,
-            secure:true
+            httpOnly: true,          // prevents access via JS
+            secure: true,            // use false on localhost, true on production
+            sameSite: "None",        // for cross-site cookies (required for Render)
+            maxAge: 24 * 60 * 60 * 1000
         }
 
-        return res.cookie('token',token,cookieOptions).status(200).json({
+        res.cookie("token", token, cookieOptions);
+
+        return res.status(200).json({
             message: "Logged in",
-            token: token,
-            success: true
-        })
-    }catch(err){
+            success: true,
+            data: user,        // send user data if needed
+        });
+    } catch (err) {
         return res.status(500).json({
             message: err.message || err,
-            error : true
+            error: true
         })
     }
 }
