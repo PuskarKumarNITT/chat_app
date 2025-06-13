@@ -10,7 +10,7 @@ import { PiVideoFill } from "react-icons/pi";
 import { IoIosClose } from "react-icons/io";
 import uploadFile from '../helpers/uploadFile';
 import CircularLoading from './CircularLoading';
-import backgroundImg from '../assets/backgroundImg.jpg'
+import backgroundImg from '../assets/backgroundimg.jpg'
 import { LuSendHorizontal } from "react-icons/lu";
 import moment from 'moment/moment';
 import { useRef } from 'react';
