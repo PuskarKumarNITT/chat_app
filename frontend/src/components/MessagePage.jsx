@@ -97,6 +97,8 @@ const MessagePage = () => {
       socketConnection.emit('message-page', params.userId);
       socketConnection.emit('seen', params.userId);
 
+      // console.log("params data user id: ",params.userId);
+
       const handleUser = (data) => setDataUser(data);
       const handleMessage = (data) => setAllMessage(data);
 
@@ -128,7 +130,7 @@ const MessagePage = () => {
 
     if (message.text || message.imageUrl || message.videoUrl) {
       if (socketConnection) {
-        socketConnection.emit('new Message', {
+        socketConnection.emit('new-message', {
           sender: user?._id,
           receiver: params?.userId,
           text: message.text,

@@ -29,22 +29,49 @@ const Sidebar = () => {
     useEffect(() => {
         if (socketConnection) {
             socketConnection.emit('sidebar', user._id);
-
+            console.log("User ID in sidebar: ", user?._id, " User name: ", user?.name);
             socketConnection.on('conversation', (data) => {
                 console.log("conversation ", data);
-                const conversationUserData = data.map((conv, index) => {
-                    if (conv?.sender?._id === conv?.receiver?._id) return { ...conv, userDetails: conv?.sender }
-                    else if (conv?.receiver?._id !== conv?._id) {
+                const conversationUserData = data.map((conv) => {
+
+                    if (conv?.sender?._id === conv?.receiver?._id) {
                         return {
                             ...conv,
-                            userDetails: conv?.receiver
+                            // unseenMsg: 0,
+                            sentTo: conv?.sender,
+                            sentBy: conv?.receiver,
+                            self: true,
+                            sent: true
+                        }
+                    } else if (conv?.sender?._id === user?._id) {
+                        return {
+                            ...conv,
+                            sentTo: conv?.receiver,
+                            sentBy: conv?.sender,
+                            self: false,
+                            sent: true
                         }
                     } else {
                         return {
                             ...conv,
-                            userDetails: conv?.sender
+                            sentTo: conv?.sender,
+                            sentBy: conv?.receiver,
+                            self: false,
+                            sent: false
                         }
                     }
+                    // if (conv?.sender?._id === conv?.receiver?._id) return { ...conv, userDetails: conv?.sender }
+                    // else if (conv?.receiver?._id !== conv?._id) {
+                    //     return {
+                    //         ...conv,
+                    //         userDetails: conv?.receiver
+                    //     }
+                    // } else {
+                    //     return {
+                    //         ...conv,
+                    //         userDetails: conv?.sender
+                    //     }
+                    // }
                 })
 
                 console.log("all user conversation data :", conversationUserData);
@@ -115,11 +142,11 @@ const Sidebar = () => {
                     {
                         allUser.map((conv, index) => {
                             return (
-                                <NavLink to={"/"+conv?.userDetails?._id} key={conv?._id} className='flex flex-row gap-2 p-2 border border-transparent cursor-pointer hover:bg-green-200 hover:rounded'>
+                                <NavLink to={"/" + conv?.sentTo?._id} key={conv?._id} className='flex flex-row gap-2 p-2 border border-transparent cursor-pointer hover:bg-green-200 hover:rounded'>
                                     <div>
                                         <Avatar
-                                            imageUrl={conv?.userDetails?.profile_pic}
-                                            name={conv?.userDetails?.name}
+                                            imageUrl={conv?.sentTo?.profile_pic}
+                                            name={conv?.sentTo?.name}
                                             width={45}
                                             height={45}
                                         />
@@ -127,7 +154,11 @@ const Sidebar = () => {
                                     </div>
                                     <div >
                                         <h3 className='text-ellipsis line-clamp-1 font-semibold'>
-                                            {conv?.userDetails?.name}
+                                            {conv?.sentTo?.name}
+
+                                            {
+                                                conv?.self && "(You)"
+                                            }
                                         </h3>
                                         <div className='text-slate-500 text-sm flex items-center gap-1'>
                                             <div>
@@ -135,7 +166,7 @@ const Sidebar = () => {
                                                     conv?.lastMsg?.imageUrl && (
                                                         <div className='flex flex-row gap-2 items-center'>
                                                             <span> <FaImage /></span>
-                                                            {!conv?.lastMsg?.text && <span>Video</span> }
+                                                            {!conv?.lastMsg?.text && <span>Video</span>}
                                                         </div>
                                                     )
                                                 }
@@ -143,7 +174,7 @@ const Sidebar = () => {
                                                     conv?.lastMsg?.videoUrl && (
                                                         <div className='flex flex-row gap-2 items-center'>
                                                             <span> <PiVideoFill /></span>
-                                                            {!conv?.lastMsg?.text && <span>Video</span> }
+                                                            {!conv?.lastMsg?.text && <span>Video</span>}
                                                         </div>
                                                     )
                                                 }
@@ -155,12 +186,12 @@ const Sidebar = () => {
                                             </p>
                                         </div>
                                     </div>
-                                    
-                                        {
-                                            conv?.unseenMsg > 0 && (
-                                                <p className='text-xcs w-6 h-6 flex justify-center items-center text-white ml-auto p-1 bg-primary font-semibold rounded-full'>{conv?.unseenMsg}</p>
-                                            )
-                                        }
+
+                                    {
+                                        !conv?.self && !conv?.sent && conv?.unseenMsg > 0 && (
+                                            <p className='text-xcs w-6 h-6 flex justify-center items-center text-white ml-auto p-1 bg-primary font-semibold rounded-full'>{conv?.unseenMsg}</p>
+                                        )
+                                    }
                                 </NavLink>
                             )
                         })

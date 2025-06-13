@@ -11,7 +11,19 @@ const getConversation = async (currentUserId) => {
                 receiver: currentUserId
             }
         ]
-    }).sort({ updatedAt: -1 }).populate('messages').populate('sender').populate('receiver');
+    })
+        .sort({ updatedAt: -1 })
+        .populate({
+            path: 'sender',
+            select: '-password'
+        })
+        .populate({
+            path: 'receiver',
+            select: '-password'
+        })
+        .populate({
+            path: 'messages'
+        });
 
 
     const conversation = currentUserConversation.map((conv) => {
@@ -31,7 +43,7 @@ const getConversation = async (currentUserId) => {
             sender: conv?.sender,
             receiver: conv?.receiver,
             unseenMsg: countUnseenMsg,
-            lastMsg: conv.messages[conv?.messages?.length - 1]
+            lastMsg: conv?.messages[conv?.messages?.length - 1]
         }
     })
     return conversation;
