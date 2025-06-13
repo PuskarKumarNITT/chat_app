@@ -20,6 +20,10 @@ const CheckPasswordPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+
+  
+  // console.log("location data in check password section: ",location);
+
   useEffect(()=>{
       if(!location?.state?.name){
         navigate("/email");
@@ -45,7 +49,7 @@ const handleSubmit = async (e) => {
       URL,
       {
         userId: location?.state?._id,
-        password: data.password
+        password: data?.password
       },
       { withCredentials: true }
     );

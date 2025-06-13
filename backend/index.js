@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 8080;
 
 
 app.use(cors({
-    origin: process.env.FRONTEND_URL,  // <-- this reads from your .env
+    origin: [process.env.FRONTEND_URL,"https://chatappfrontend-p2j0.onrender.com"],  // <-- this reads from your .env
     credentials: true
 }));
 
