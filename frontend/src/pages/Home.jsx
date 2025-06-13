@@ -54,14 +54,14 @@ const Home = () => {
       }
     });
 
-    socketRef.current = socket;
+    socketRef.current = socketConnection;
 
     socketConnection.on('onlineUser', (data) => {
       console.log('data: ', data);
       dispatch(setOnlineUser(data))
     });
 
-    dispatch(setSocketConnection(socketConnection));
+    // dispatch(setSocketConnection(socketConnection));
     return () => {
       socketConnection.disconnect();
       localStorage.clear();
