@@ -66,7 +66,7 @@ const handleSubmit = async (e) => {
   }
 };
 
-    let valu = "Puskar Kumar";
+    // let valu = "Puskar Kumar";
   return (
     <div className='mt-10'>
           <div className='bg-white w-full max-w-sm  rounded overflow-hidden p-4 mx-auto'>

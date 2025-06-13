@@ -31,6 +31,7 @@ const Home = () => {
       if (response?.data?.data?.logout) {
         dispatch(logout());
         navigate("/email");
+        localStorage.clear();
       }
 
       console.log("Current user details: ", response);
@@ -61,6 +62,7 @@ const Home = () => {
     dispatch(setSocketConnection(socketConnection));
     return () => {
       socketConnection.disconnect();
+      localStorage.clear();
     }
   },[])
 
