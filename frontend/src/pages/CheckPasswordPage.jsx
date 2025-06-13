@@ -24,7 +24,7 @@ const CheckPasswordPage = () => {
   
   console.log("location data in check password section: ",location);
   console.log("Data in the check password section: ",data);
-  
+
   useEffect(()=>{
       if(!location?.state?.name){
         navigate("/email");
@@ -57,8 +57,10 @@ const handleSubmit = async (e) => {
 
     toast.success(response?.data?.message);
 
+    console.log("Response received during token: ",response);
     if(response?.data?.success){
       dispatch(setToken(response?.data?.token));
+      console.log("Token during login ",response?.data?.token);
       localStorage.setItem('token',response?.data?.token);
     }
 

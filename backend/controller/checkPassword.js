@@ -31,13 +31,11 @@ async function checkPassword(req, res) {
             maxAge: 24 * 60 * 60 * 1000
         }
 
-        res.cookie("token", token, cookieOptions);
-
-        return res.status(200).json({
+        return res.cookie('token', token, cookieOptions).status(200).json({
             message: "Logged in",
-            success: true,
-            data: user,        // send user data if needed
+            success: true
         });
+
     } catch (err) {
         return res.status(500).json({
             message: err.message || err,

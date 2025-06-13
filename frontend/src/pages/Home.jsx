@@ -48,11 +48,12 @@ const Home = () => {
   // socket connectinons 
 
   useEffect(() => {
-    const socketConnection = io(import.meta.env.VITE_BACKEND_URL, {
-      auth: {
-        token: localStorage.getItem('token')
-      }
-    });
+    const token = localStorage.getItem("token");
+console.log("Sending token to socket:", token);
+
+const socketConnection = io(import.meta.env.VITE_BACKEND_URL, {
+  auth: { token }
+});
 
     socketRef.current = socketConnection;
 
