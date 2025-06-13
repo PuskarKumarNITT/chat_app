@@ -22,8 +22,9 @@ const CheckPasswordPage = () => {
   const dispatch = useDispatch();
 
   
-  // console.log("location data in check password section: ",location);
-
+  console.log("location data in check password section: ",location);
+  console.log("Data in the check password section: ",data);
+  
   useEffect(()=>{
       if(!location?.state?.name){
         navigate("/email");
