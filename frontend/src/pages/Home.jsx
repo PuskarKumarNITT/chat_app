@@ -1,12 +1,11 @@
-import React, { useEffect, useReducer } from 'react'
+import React, { useEffect, useReducer, useRef } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { logout, setOnlineUser, setSocketConnection, setUser } from '../redux/userSlice';
+import { logout, setOnlineUser, setUser } from '../redux/userSlice';  // setSocketConnection,
 import Sidebar from '../components/Sidebar';
 import logo from '../assets/logo.png'
 import { io } from 'socket.io-client'
-
 
 
 const Home = () => {
@@ -17,8 +16,9 @@ const Home = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const socketRef = useRef(null);
 
-  console.log("user: ",user);  
+  console.log("user: ", user);
   const fetchUserDetails = async () => {
     try {
       const URL = `${import.meta.env.VITE_BACKEND_URL}/api/user-details`;
@@ -46,25 +46,27 @@ const Home = () => {
   }, [])
 
   // socket connectinons 
-  
+
   useEffect(() => {
-    const socketConnection = io(import.meta.env.VITE_BACKEND_URL,{
-      auth:{
+    const socketConnection = io(import.meta.env.VITE_BACKEND_URL, {
+      auth: {
         token: localStorage.getItem('token')
       }
-    })
+    });
 
-    socketConnection.on('onlineUser',(data) => {
-      console.log('data: ',data);
+    socketRef.current = socket;
+
+    socketConnection.on('onlineUser', (data) => {
+      console.log('data: ', data);
       dispatch(setOnlineUser(data))
-    })
+    });
 
     dispatch(setSocketConnection(socketConnection));
     return () => {
       socketConnection.disconnect();
       localStorage.clear();
     }
-  },[])
+  }, []);
 
   const basePath = location.pathname === "/";
 

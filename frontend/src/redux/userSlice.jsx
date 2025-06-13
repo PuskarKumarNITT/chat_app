@@ -33,12 +33,12 @@ export const userSlice = createSlice({
       state.onlineUser = action.payload;
 
     },
-    setSocketConnection: (state, action) => {
-      state.socketConnection = action.payload;
-    }
+    // setSocketConnection: (state, action) => {
+    //   state.socketConnection = action.payload;
+    // }
   }
 });
 
-export const { setUser, setToken, logout, setOnlineUser, setSocketConnection } = userSlice.actions;
+export const { setUser, setToken, logout, setOnlineUser } = userSlice.actions;   //, setSocketConnection
 
 export default userSlice.reducer;
