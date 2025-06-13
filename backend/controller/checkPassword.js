@@ -33,6 +33,7 @@ async function checkPassword(req, res) {
 
         return res.cookie('token', token, cookieOptions).status(200).json({
             message: "Logged in",
+            token,
             success: true
         });
 
