@@ -2,7 +2,7 @@ import React, { useEffect, useReducer, useRef } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { logout, setOnlineUser, setUser } from '../redux/userSlice';  // setSocketConnection,
+import { logout, setOnlineUser, setUser,setSocketConnection } from '../redux/userSlice';  // setSocketConnection,
 import Sidebar from '../components/Sidebar';
 import logo from '../assets/logo.png'
 import { io } from 'socket.io-client'
@@ -12,13 +12,13 @@ const Home = () => {
 
   const user = useSelector(state => state.user);
   const dispatch = useDispatch();
-  console.log("User data: ", user);
+  // console.log("User data: ", user);
   const navigate = useNavigate();
   const location = useLocation();
 
   const socketRef = useRef(null);
 
-  console.log("user: ", user);
+  // console.log("user: ", user);
   const fetchUserDetails = async () => {
     try {
       const URL = `${import.meta.env.VITE_BACKEND_URL}/api/user-details`;
@@ -34,7 +34,7 @@ const Home = () => {
         localStorage.clear();
       }
 
-      console.log("Current user details: ", response);
+      // console.log("Current user details: ", response);
     } catch (err) {
       console.log("Error", err);
     }
@@ -48,12 +48,11 @@ const Home = () => {
   // socket connectinons 
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-console.log("Sending token to socket:", token);
-
-const socketConnection = io(import.meta.env.VITE_BACKEND_URL, {
-  auth: { token }
-});
+    const socketConnection = io(import.meta.env.VITE_BACKEND_URL, {
+      auth: {
+        token: localStorage.getItem('token')
+      }
+    });
 
     socketRef.current = socketConnection;
 
@@ -62,7 +61,7 @@ const socketConnection = io(import.meta.env.VITE_BACKEND_URL, {
       dispatch(setOnlineUser(data))
     });
 
-    // dispatch(setSocketConnection(socketConnection));
+    dispatch(setSocketConnection(socketConnection));
     return () => {
       socketConnection.disconnect();
       localStorage.clear();

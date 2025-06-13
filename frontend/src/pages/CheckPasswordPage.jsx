@@ -57,10 +57,10 @@ const handleSubmit = async (e) => {
 
     toast.success(response?.data?.message);
 
-    console.log("Response received during token: ",response);
+    // console.log("Response received during token: ",response);
     if(response?.data?.success){
       dispatch(setToken(response?.data?.token));
-      console.log("Token during login ",response?.data?.token);
+      // console.log("Token during login ",response?.data?.token);
       localStorage.setItem('token',response?.data?.token);
     }
 
